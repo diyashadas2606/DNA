@@ -1,0 +1,87 @@
+[
+  {
+    "sample_id": 271,
+    "features": {
+      "Age": 59,
+      "Sex": "m",
+      "ALB": 39.8,
+      "ALP": 49.4,
+      "ALT": 25.4,
+      "AST": 21.4,
+      "BIL": 24.7,
+      "CHE": 7.5,
+      "CHOL": 3.69,
+      "CREA": 86.0,
+      "GGT": 18.7,
+      "PROT": 71.9
+    }
+  },
+  {
+    "sample_id": 535,
+    "features": {
+      "Age": 48,
+      "Sex": "m",
+      "ALB": 24.9,
+      "ALP": 116.9,
+      "ALT": 49.2,
+      "AST": 24.3,
+      "BIL": 4.9,
+      "CHE": 3.44,
+      "CHOL": 5.25,
+      "CREA": 29.0,
+      "GGT": 83.0,
+      "PROT": 47.8
+    }
+  },
+  {
+    "sample_id": 558,
+    "features": {
+      "Age": 51,
+      "Sex": "m",
+      "ALB": 43.0,
+      "ALP": 37.2,
+      "ALT": 21.4,
+      "AST": 132.8,
+      "BIL": 5.0,
+      "CHE": 10.12,
+      "CHOL": 5.23,
+      "CREA": 76.2,
+      "GGT": 76.4,
+      "PROT": 76.7
+    }
+  },
+  {
+    "sample_id": 581,
+    "features": {
+      "Age": 68,
+      "Sex": "f",
+      "ALB": 43.0,
+      "ALP": 22.9,
+      "ALT": 5.0,
+      "AST": 42.1,
+      "BIL": 12.0,
+      "CHE": 7.29,
+      "CHOL": 4.89,
+      "CREA": 80.9,
+      "GGT": 11.9,
+      "PROT": 76.1
+    }
+  },
+  {
+    "sample_id": 599,
+    "features": {
+      "Age": 58,
+      "Sex": "m",
+      "ALB": 31.0,
+      "ALP": 143.1,
+      "ALT": 7.0,
+      "AST": 181.8,
+      "BIL": 58.0,
+      "CHE": 3.29,
+      "CHOL": 3.92,
+      "CREA": 66.4,
+      "GGT": 273.7,
+      "PROT": 78.1
+    }
+  }
+]

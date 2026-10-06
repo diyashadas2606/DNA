@@ -1,0 +1,9 @@
+Source: UCI Machine Learning Repository, HCV data (dataset 571)
+Authors: Ralf Lichtinghagen, Frank Klawonn, Georg Hoffmann
+Citation: Lichtinghagen, R., Klawonn, F., & Hoffmann, G. (2020). HCV data [Dataset]. UCI Machine Learning Repository. https://doi.org/10.24432/C5D612.
+License: Creative Commons Attribution 4.0 International
+License link: https://creativecommons.org/licenses/by/4.0/
+Source page: https://archive.ics.uci.edu/dataset/571/hcv+data
+Download: https://archive.ics.uci.edu/static/public/571/hcv+data.zip
+Downloaded: 2026-10-06
+The CSV is the unmodified source file. DNA excludes row IDs and applies training-fitted imputation and sex encoding in its saved pipeline. No extra disease datasets are included.
