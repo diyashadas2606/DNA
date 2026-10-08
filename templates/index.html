@@ -1,12 +1,269 @@
 <!doctype html>
-<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>DNA | Understand your model</title><link rel="stylesheet" href="/static/style.css"></head>
-<body><aside class="sidebar"><a class="brand" href="/" aria-label="DNA home"><span class="brand-icon">◈</span> DNA<span class="brand-dot">.</span></a><p class="brand-caption">DISCOVER. UNDERSTAND.</p><div class="nav-label">WORKSPACE</div><nav aria-label="Workspace"><a class="active" href="#workspace">◎ &nbsp; Lab explorer</a><a href="#evaluation">▥ &nbsp; Model evaluation</a><a href="/report" target="_blank">↗ &nbsp; Project report</a></nav><div class="module-card"><span class="status-dot"></span> ACTIVE MODULE<h3>HCV laboratory study</h3><p>Five dataset categories.<br>One transparent experiment.</p><span class="tag">Random Forest</span></div><div class="future"><span>BUILT TO GROW</span><p>More disease modules,<br>one DNA workspace.</p><small>HCV is the first study. Additional modules are planned.</small></div><div class="sidebar-bottom">TEAM DNA <span>Academic project · 2026</span></div></aside>
-<main><header class="topbar"><span>Workspace <span class="slash">/</span> HCV study</span><span class="local"><i></i> Local demo</span></header><div class="content"><section class="intro" id="workspace"><div><div class="eyebrow">FROM LAB VALUES TO MODEL INSIGHT</div><h1>Explore the evidence.</h1><p>Enter a test panel. Understand the prediction.<br>See how a Random Forest reads the data.</p></div><div class="study-stamp"><strong>01</strong><span>DISEASE MODULE<br>HCV STUDY</span></div></section>
-<div class="notice"><span>ⓘ</span><p><strong>For learning, not clinical diagnosis.</strong> This model classifies patterns in a research dataset. Scores are not calibrated clinical probabilities; donor labels do not mean disease-free.</p></div>
-<div class="workspace-grid"><section class="panel inputs-panel"><div class="panel-heading"><div><span class="eyebrow">01 / INPUT</span><h2>Laboratory panel</h2></div><span class="subtle-tag">12 inputs</span></div><div class="sample-row"><select id="example" aria-label="Choose a held-out example">{% for sample in examples %}<option value="{{loop.index0}}">Research sample {{sample.sample_id}}</option>{% endfor %}</select><button class="secondary" id="load" type="button">Load sample ↗</button></div><p class="hint">Use original dataset-scale values. UCI does not specify lab units; sample cases are recommended. No clinical reference ranges are assumed.</p>
-<form id="prediction-form"><div class="section-label">PATIENT CONTEXT</div><div class="context-grid"><label>Age <span>years</span><input name="Age" type="number" min="1" max="120" step="1" placeholder="e.g. 45" required></label><label>Recorded sex<select name="Sex" required><option value="">Select</option><option value="f">Female</option><option value="m">Male</option></select></label></div><div class="section-label lab-heading">BLOOD TEST RESULTS <span id="completeness">0 / 10 entered</span></div><div class="lab-grid">{% for field in spec.fields %}<label><span class="test-key">{{field.key}}</span><span class="test-name">{{field.name}}</span><input name="{{field.key}}" type="number" min="0" max="1000000000" step="any" placeholder="Enter value" aria-label="{{field.name}}"></label>{% endfor %}</div><p class="hint">Up to 3 blank lab fields can use training medians. Any substitutions will appear with the result.</p><div class="form-actions"><button class="primary" id="submit" type="submit">Analyze test panel <span>→</span></button><button type="reset" class="text-button">Reset</button></div></form><div id="error" role="alert" hidden></div></section>
-<div class="result-column"><section class="panel result-panel"><div class="panel-heading"><div><span class="eyebrow">02 / DISCOVER</span><h2>Model prediction</h2></div><span class="subtle-tag" id="result-status">Awaiting inputs</span></div><div id="empty-result"><div class="empty-art"><span></span><span></span><span></span><i>◎</i></div><h3>A clearer view starts here.</h3><p>Load a research sample or enter your test panel to explore the model's five category scores.</p><div class="empty-steps"><span>01 &nbsp; Add values</span><span>02 &nbsp; Analyze</span><span>03 &nbsp; Explore</span></div></div><div id="result" role="status" aria-live="polite" hidden><div class="result-overline">PREDICTED DATASET CATEGORY</div><h3 id="prediction"></h3><div class="score-line"><strong id="top-score"></strong><span>model score<br><small>uncalibrated</small></span></div><div id="score-bars"></div><div id="quality-notes"></div><div class="result-buttons"><button class="secondary" id="pin" type="button">Pin for comparison</button><button class="text-button" id="download" type="button">Export result ↓</button></div></div></section>
-<section class="panel explain-panel"><span class="eyebrow">03 / UNDERSTAND</span><h2>Explain &amp; Explore</h2><p class="hint">Our project feature: inspect which observed lab values the model responds to, then compare a changed test panel.</p><div id="explanation-empty" class="empty-caption">Input sensitivity appears after analysis.</div><div id="explanation" hidden><p class="hint">Change in the predicted category's score when each value is replaced with its training median. Positive values support the current score relative to that reference.</p><div id="effects"></div><p class="micro">One value changes at a time. This is model sensitivity, not SHAP, a treatment suggestion, or evidence of causation.</p></div><div id="comparison" hidden></div></section></div></div>
-<section id="evaluation" class="evaluation"><div class="section-heading"><div><span class="eyebrow">THE EXPERIMENT, IN THE OPEN</span><h2>Beyond one accuracy number.</h2></div><a href="/report" target="_blank">Read the report ↗</a></div><div class="metrics"><div><span>Test accuracy</span><strong>{{'%.1f'|format(metrics.accuracy*100)}}<small>%</small></strong><p>Majority baseline {{'%.1f'|format(metrics.baseline_accuracy*100)}}%</p></div><div><span>Macro F1</span><strong>{{'%.3f'|format(metrics.macro_f1)}}</strong><p>Each class has equal weight</p></div><div><span>Balanced accuracy</span><strong>{{'%.1f'|format(metrics.balanced_accuracy*100)}}<small>%</small></strong><p>Average recall across classes</p></div><div><span>Held-out records</span><strong>{{metrics.test_samples}}</strong><p>Excluded from model fitting</p></div></div><div class="evaluation-note">The dataset is imbalanced: {% for name,count in metrics.class_counts.items() %}{{name}} {{count}}{% if not loop.last %} · {% endif %}{% endfor %}. Small test groups make class-level estimates unstable.</div><div class="chart-grid"><figure class="panel"><img src="/artifacts/hcv/confusion_matrix.png" alt="HCV test confusion matrix"><figcaption>Read each row as the actual category and each column as the prediction.</figcaption></figure><figure class="panel"><img src="/artifacts/hcv/class_performance.png" alt="Precision and recall for each HCV category"><figcaption>High overall accuracy can hide weak detection of rare categories.</figcaption></figure></div><details class="panel"><summary>How was the model trained?</summary><p>400 trees. A stratified 80/20 split with seed 42. Five-fold validation within the 492 training records. Median imputation and sex encoding are fitted inside each fold. The saved model is the same one evaluated on the 123 test records.</p><img class="importance" src="/artifacts/hcv/feature_importance.png" alt="Training feature importances"><p class="hint">Impurity importance describes the fitted trees, not causal or patient-specific medical importance.</p></details></section>
-<footer><span><b>DNA.</b> Built by Team DNA.</span><a href="{{spec.source}}" target="_blank" rel="noreferrer">Official UCI dataset ↗</a><a href="/artifacts/hcv/example_inputs.csv">Sample CSV ↓</a></footer></div></main>
-<script id="example-data" type="application/json">{{examples|tojson}}</script><script src="/static/app.js"></script></body></html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>DNA | Multi-Disease Clinical Diagnostic Intelligence</title>
+  <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+  <!-- Sidebar -->
+  <aside class="sidebar">
+    <a class="brand" href="/" aria-label="DNA home">
+      <span class="brand-icon">◈</span> DNA<span class="brand-dot">.</span>
+    </a>
+    <p class="brand-caption">CLINICAL DIAGNOSTIC WORKSPACE</p>
+
+    <div class="nav-label">WORKSPACE</div>
+    <nav aria-label="Workspace">
+      <a class="active" href="#workspace">◎ &nbsp; Diagnostic Explorer</a>
+      <a href="#evaluation">▥ &nbsp; Model Evaluation</a>
+      <a href="/report" target="_blank">↗ &nbsp; Project Report</a>
+    </nav>
+
+    <div class="nav-label" style="margin-top: 24px;">PATIENT WORKUPS</div>
+    <div class="sidebar-tests" id="sidebar-test-list">
+      <!-- Populated dynamically with clinical test buttons -->
+    </div>
+
+    <div class="module-card" id="sidebar-module-card">
+      <span class="status-dot"></span> <span id="sidebar-card-badge">ACTIVE INVESTIGATION</span>
+      <h3 id="sidebar-card-title">Comprehensive Liver Function Panel</h3>
+      <p id="sidebar-card-desc">Measures enzyme activity, synthetic function, and fibrosis markers.</p>
+      <span class="tag" id="sidebar-card-tag">Random Forest Classifier</span>
+    </div>
+
+    <div class="sidebar-bottom">
+      TEAM DNA <span>Clinical Intelligence Platform · 2026</span>
+    </div>
+  </aside>
+
+  <!-- Main Content Area -->
+  <main>
+    <header class="topbar">
+      <div class="topbar-left">
+        <span>Workspace <span class="slash">/</span> <strong id="topbar-investigation-name">Liver Function Panel (LFT)</strong></span>
+      </div>
+      <div class="topbar-right">
+        <span class="local"><i></i> Local Clinical Engine</span>
+      </div>
+    </header>
+
+    <div class="content">
+      <!-- Diagnostic Investigation Selector -->
+      <section class="test-selector-section" id="workspace">
+        <div class="eyebrow">STEP 1: SELECT PATIENT DIAGNOSTIC WORKUP</div>
+        <h1 class="selector-title">What tests were performed on the patient?</h1>
+        <p class="selector-desc">Select the diagnostic investigation or laboratory panel ordered for this patient to configure the biomarker inputs and predictive evaluation pipeline.</p>
+
+        <div class="test-cards-grid" id="test-cards-container" role="tablist" aria-label="Patient Diagnostic Tests">
+          <!-- Dynamic Diagnostic Test Cards rendered by app.js -->
+        </div>
+      </section>
+
+      <!-- Clinical Safety Notice -->
+      <div class="notice">
+        <span>ⓘ</span>
+        <p><strong>Educational &amp; Research Tool:</strong> This platform evaluates machine learning models on validated clinical research datasets. Output scores represent uncalibrated empirical classification confidences and must not be used as clinical diagnostic substitutes.</p>
+      </div>
+
+      <!-- Main Workspace Grid -->
+      <div class="workspace-grid">
+        <!-- Input Panel -->
+        <section class="panel inputs-panel">
+          <div class="panel-heading">
+            <div>
+              <span class="eyebrow">02 / PATIENT INPUTS</span>
+              <h2 id="form-panel-title">Laboratory &amp; Diagnostic Panel</h2>
+            </div>
+            <span class="subtle-tag" id="feature-count-badge">12 Parameters</span>
+          </div>
+
+          <!-- Patient Sample Loader -->
+          <div class="sample-wrapper">
+            <div class="sample-label">
+              <span>PRE-LOAD CLINICAL PATIENT CASE</span>
+              <small>Explore real held-out test patient cases</small>
+            </div>
+            <div class="sample-row">
+              <select id="example" aria-label="Choose a patient case study">
+                <!-- Dynamically populated with patient cases for active test -->
+              </select>
+              <button class="secondary" id="load" type="button">Load Case ↗</button>
+            </div>
+          </div>
+
+          <p class="hint" id="test-clinical-hint">
+            Enter the patient's observed laboratory or diagnostic values. Clinical reference ranges and units are indicated for each marker.
+          </p>
+
+          <!-- Dynamic Form -->
+          <form id="prediction-form">
+            <div id="form-fields-container">
+              <!-- Dynamically populated by app.js depending on active diagnostic test -->
+            </div>
+
+            <div class="form-actions">
+              <button class="primary" id="submit" type="submit">
+                <span>Analyze Diagnostic Panel</span>
+                <span>→</span>
+              </button>
+              <button type="reset" class="text-button" id="reset-button">Reset Panel</button>
+            </div>
+          </form>
+
+          <div id="error" role="alert" hidden></div>
+        </section>
+
+        <!-- Result & Explanation Column -->
+        <div class="result-column">
+          <!-- Prediction Result Panel -->
+          <section class="panel result-panel">
+            <div class="panel-heading">
+              <div>
+                <span class="eyebrow">03 / DIAGNOSTIC FINDINGS</span>
+                <h2 id="result-heading">Model Prediction</h2>
+              </div>
+              <span class="subtle-tag" id="result-status">Awaiting test inputs</span>
+            </div>
+
+            <!-- Empty State -->
+            <div id="empty-result">
+              <div class="empty-art">
+                <span></span><span></span><span></span>
+                <i id="empty-icon">🧪</i>
+              </div>
+              <h3>Awaiting Investigation Data</h3>
+              <p>Load a patient case study above or enter observed test values to compute predicted pathology scores.</p>
+              <div class="empty-steps">
+                <span>01 &nbsp; Select Test</span>
+                <span>02 &nbsp; Enter Values</span>
+                <span>03 &nbsp; Analyze</span>
+              </div>
+            </div>
+
+            <!-- Active Result State -->
+            <div id="result" role="status" aria-live="polite" hidden>
+              <div class="result-overline" id="target-label-overline">PREDICTED CLINICAL OUTCOME</div>
+              <h3 id="prediction"></h3>
+              
+              <div class="score-line">
+                <strong id="top-score">0.0%</strong>
+                <span>confidence score<br><small>uncalibrated model probability</small></span>
+              </div>
+
+              <div class="score-bars-section">
+                <div class="section-subhead">Probability Distribution Across Categories</div>
+                <div id="score-bars"></div>
+              </div>
+
+              <div id="quality-notes"></div>
+
+              <div class="result-buttons">
+                <button class="secondary" id="pin" type="button">Pin for Comparison</button>
+                <button class="text-button" id="download" type="button">Export Diagnostic JSON ↓</button>
+              </div>
+            </div>
+          </section>
+
+          <!-- Sensitivity & Explainability Panel -->
+          <section class="panel explain-panel">
+            <div class="panel-heading">
+              <div>
+                <span class="eyebrow">04 / INTERPRETABILITY</span>
+                <h2>Explain &amp; Sensitivity</h2>
+              </div>
+              <span class="subtle-tag">Local Sensitivity</span>
+            </div>
+            <p class="hint">Inspect which observed patient biomarkers exerted the strongest influence on the predicted outcome relative to reference median baselines.</p>
+
+            <div id="explanation-empty" class="empty-caption">
+              Marker sensitivity breakdown will appear upon running analysis.
+            </div>
+
+            <div id="explanation" hidden>
+              <div id="effects"></div>
+              <p class="micro">
+                Sensitivity illustrates score percentage point changes when individual values are replaced with reference population medians. This measures model sensitivity, not causal medical efficacy.
+              </p>
+            </div>
+
+            <div id="comparison" hidden></div>
+          </section>
+        </div>
+      </div>
+
+      <!-- Model Evaluation Section -->
+      <section id="evaluation" class="evaluation">
+        <div class="section-heading">
+          <div>
+            <span class="eyebrow">VALIDATION EVIDENCE</span>
+            <h2 id="eval-section-title">Model Evaluation: Liver Function Panel</h2>
+            <p id="eval-section-desc" class="eval-desc">Held-out test set performance from reproducible 5-fold cross-validation.</p>
+          </div>
+          <a href="/report" target="_blank">Full Technical Report ↗</a>
+        </div>
+
+        <div class="metrics">
+          <div>
+            <span>Test Accuracy</span>
+            <strong id="metric-accuracy">--<small>%</small></strong>
+            <p id="metric-baseline">Baseline --%</p>
+          </div>
+          <div>
+            <span>Macro F1-Score</span>
+            <strong id="metric-f1">--</strong>
+            <p>Equal weight per category</p>
+          </div>
+          <div>
+            <span>Balanced Accuracy</span>
+            <strong id="metric-balanced">--<small>%</small></strong>
+            <p>Average class recall</p>
+          </div>
+          <div>
+            <span>Held-Out Test Records</span>
+            <strong id="metric-samples">--</strong>
+            <p>Completely unseen in training</p>
+          </div>
+        </div>
+
+        <div class="evaluation-note" id="evaluation-note">
+          Class distribution and test partitions are stratified to ensure reliable benchmark evaluation.
+        </div>
+
+        <div class="chart-grid">
+          <figure class="panel">
+            <img id="chart-cm" src="/artifacts/hcv/confusion_matrix.png" alt="Test confusion matrix">
+            <figcaption><strong>Confusion Matrix:</strong> Actual category (rows) vs. Model prediction (columns).</figcaption>
+          </figure>
+          <figure class="panel">
+            <img id="chart-perf" src="/artifacts/hcv/class_performance.png" alt="Class performance metrics">
+            <figcaption><strong>Class Metrics:</strong> Precision and recall per clinical diagnosis category.</figcaption>
+          </figure>
+        </div>
+
+        <div class="feature-importance-wrapper panel" style="margin-top: 24px;">
+          <div class="panel-heading">
+            <div>
+              <span class="eyebrow">GLOBAL FEATURE RANKING</span>
+              <h3>Predictive Biomarker Importance</h3>
+            </div>
+            <span class="subtle-tag">Gini Impurity</span>
+          </div>
+          <p class="hint">Shows the most predictive features across the ensemble of decision trees for this diagnostic investigation.</p>
+          <img id="chart-imp" class="importance" src="/artifacts/hcv/feature_importance.png" alt="Feature importance plot">
+        </div>
+      </section>
+
+      <!-- Footer -->
+      <footer>
+        <span><b>DNA.</b> Clinical Diagnostic Intelligence Platform &middot; Built with Random Forests &middot; 2026</span>
+        <a id="footer-source-link" href="https://archive.ics.uci.edu" target="_blank" rel="noreferrer">Official Dataset Source ↗</a>
+        <a id="footer-sample-csv" href="/artifacts/hcv/example_inputs.csv">Held-out Sample CSV ↓</a>
+      </footer>
+    </div>
+  </main>
+
+  <script src="/static/app.js"></script>
+</body>
+</html>

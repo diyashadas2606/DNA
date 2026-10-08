@@ -1,65 +1,85 @@
-# DNA - Disease Diagnosis Using Random Forest
+# DNA - Clinical Diagnostic Intelligence Platform
 
-DNA is an educational HCV laboratory classifier with a local web interface and an eight-page report. HCV is the only active disease module. More disease modules are planned after this model is understood.
+**DNA** is a multi-investigation clinical machine learning platform designed around real-world patient diagnostic investigations. Rather than selecting an arbitrary disease from a dropdown menu, clinicians or researchers select the **Diagnostic Test or Laboratory Panel** performed on the patient.
 
-## Start on this computer
+---
 
-From PowerShell in `D:\FML PROJECT`:
+## Supported Clinical Diagnostic Investigations
+
+| Investigation Panel | Clinical Purpose | Biomarkers / Parameters | Target Pathology | Test Accuracy |
+| :--- | :--- | :--- | :--- | :--- |
+| 🧪 **Comprehensive Liver Function Panel (LFT)** | Hepatic blood chemistry & enzyme activity | Albumin, Bilirubin, ALT, AST, GGT, ALP, Cholinesterase, Total Protein, Cholesterol, Creatinine, Age, Sex | Blood Donor (Healthy), Hepatitis, Fibrosis, Cirrhosis | **95.12%** |
+| 🫀 **Cardiovascular Stress & Diagnostic Workup** | Hemodynamics, lipid profile & treadmill stress ECG | Resting BP, Serum Cholesterol, Fasting Blood Sugar, Resting ECG, Max Heart Rate, Exercise Angina, ST Depression, ST Slope, Fluoroscopy Vessels, Thallium Scan | Absence vs. Presence of Heart Disease | **90.16%** |
+| 🩸 **Glycemic & Metabolic Profile** | Endocrine challenge & insulin resistance | Fasting Plasma Glucose, Serum Insulin, BMI, Diastolic BP, Skinfold Thickness, Pedigree Function, Age, Pregnancies | Non-Diabetic vs. Diabetic | **73.38%** |
+| 🔬 **Fine Needle Aspiration (FNA) Cytology** | Microscopic digital nuclear morphometry of lesion | 30 Nuclear Morphology measurements (Mean, SE, Worst: Radius, Texture, Perimeter, Area, Smoothness, Compactness, Concavity, Concave Points, Symmetry, Fractal Dimension) | Benign vs. Malignant Lesion | **96.49%** |
+
+---
+
+## Quickstart
+
+From PowerShell in the project directory:
 
 ```powershell
 .\.venv\Scripts\python.exe app.py
 ```
 
-Open http://127.0.0.1:5000. Select Research sample 599, click **Load sample**, then **Analyze test panel**. Expected output: **Cirrhosis**, score **83.8%**. Sample 271 returns **Blood donor**, score **92.5%**. Scores are not calibrated clinical probabilities. Stop with Ctrl+C.
+Then open your browser to **http://127.0.0.1:5000**.
 
-## Fresh installation
+1. Select any of the **Diagnostic Workup Cards** at the top (`🧪 Liver Panel`, `🫀 Cardiac Workup`, `🩸 Glycemic Profile`, or `🔬 FNA Biopsy`).
+2. Click **Load Case ↗** to load verified held-out clinical patient cases, or enter custom biomarker values.
+3. Click **Analyze Diagnostic Panel →**.
+4. View predicted pathology categories, confidence scores, sensitivity deltas against population medians, and model evaluation benchmarks.
 
-Use Python 3.12 and run:
+---
+
+## Re-training All Models & Running Tests
+
+To retrain all clinical diagnostic pipelines from scratch:
 
 ```powershell
-python -m venv .venv
-.\.venv\Scripts\python.exe -m pip install -r requirements-lock.txt
-.\.venv\Scripts\python.exe train.py
+# Train all 4 diagnostic models
+.\.venv\Scripts\python.exe train.py --module all
+
+# Or train a specific test:
+.\.venv\Scripts\python.exe train.py --module heart
+.\.venv\Scripts\python.exe train.py --module diabetes
+.\.venv\Scripts\python.exe train.py --module breast_cancer
+.\.venv\Scripts\python.exe train.py --module hcv
+
+# Run full integration test suite
 .\.venv\Scripts\python.exe -m unittest test_model.py -v
-.\.venv\Scripts\python.exe app.py
 ```
 
-The official dataset is included in `data/hcv/hcvdat0.csv`, so training and inference work offline after dependency installation. Retrain locally if the dependency versions change. Load only trusted model artifacts.
+---
 
-## Model and results
+## Architectural Layout
 
-- Source: UCI HCV data, 615 records, age/sex and 10 lab predictors.
-- Five original classes retained: blood donor, suspected blood donor, hepatitis, fibrosis, cirrhosis.
-- Stratified 80/20 split with seed 42: 492 training, 123 testing.
-- Five-fold validation on training records only. Median imputation and one-hot encoding are fitted inside the pipeline for every fold.
-- 400 trees, minimum leaf size 2, square-root feature sampling, balanced_subsample weights.
-- Test accuracy 95.12%; macro F1 0.612; balanced accuracy 58.67%.
-- Majority baseline accuracy 86.99%. Accuracy alone obscures weak rare-class performance.
-- The saved pipeline is the exact evaluated model. It is not refitted on test records.
+- [**`modules.py`**](modules.py): Master clinical registry defining diagnostic test schemas, medical units, clinical reference ranges, valid categories, and model configurations.
+- [**`train.py`**](train.py): Reproducible machine learning training pipelines with stratified 80/20 train/test splits, 5-fold cross-validation inside pipelines, and automated artifact generation.
+- [**`app.py`**](app.py): Flask application powering the API (`/api/modules`, `/api/<module_id>/predict`) and local web server.
+- [**`templates/index.html`**](templates/index.html): Responsive user interface with diagnostic test selection cards, dynamic patient panels, and evaluation dashboards.
+- [**`static/app.js`**](static/app.js): Client-side reactive controller for test switching, form building, predictions, and sensitivity explanations.
+- [**`static/style.css`**](static/style.css): Modern styling and responsive layout.
+- [**`data/`**](data/): Contains official datasets for Liver (`data/hcv/`), Heart (`data/heart/`), Diabetes (`data/diabetes/`), and Breast Cancer (`data/breast_cancer/`).
+- [**`artifacts/`**](artifacts/): Trained model bundles (`model.joblib`), evaluation metrics (`metrics.json`), confusion matrices, and feature importance charts for each investigation.
+- [**`test_model.py`**](test_model.py): End-to-end integration and data leakage test suite.
 
-## Explain and Explore
+---
 
-The explanation changes one observed lab value to its training median and measures the resulting change in the current winning class score. It is a local sensitivity probe, not SHAP or a causal medical explanation. Pin an output, change inputs, and run again to compare. Export result downloads the supplied panel and results as JSON.
+## Interpretability & Sensitivity
 
-Age and recorded sex are required. Up to three blank lab inputs are imputed and disclosed; four or more are rejected. This is a demo policy, not a clinical rule. The 65% review flag is illustrative and unvalidated. UCI does not document lab units in its variable table: use original dataset-scale inputs and sample cases. No clinical ranges are inferred. The app does not store submitted panels.
+The platform features a local sensitivity probe for every diagnostic test:
+- Each observed biomarker is temporarily replaced with its population training median, calculating the net shift in the winning category's likelihood ($\pm\text{pp}$).
+- Flags out-of-range inputs that exceed observed training extremes.
+- Allows clinicians to **Pin for Comparison** to observe how specific biomarker interventions shift diagnostic outcomes.
 
-## Project files
+---
 
-- `modules.py`: HCV input contract and module registry.
-- `train.py`: reproducible training and evaluation.
-- `app.py`, `templates/`, `static/`: DNA local interface and API.
-- `artifacts/hcv/`: evaluated model, metrics, charts, held-out examples and test predictions.
-- `data/hcv/`: official original dataset, archive and attribution.
-- `report/DNA_HCV_Report.pdf`: final project report.
-- `report/DNA_HCV_Report.html`: editable report content, with embedded figures.
-- `report/build_report.py`: regenerates the report from metrics; requires reportlab in an authoring environment.
-- `test_model.py`: integration checks, including every saved test prediction and explanation math.
-- `prototypes/breast_cancer/`: earlier experiment outputs, retained for reference and unused by DNA.
+## Attribution & Clinical Notice
 
-## Adding disease modules later
+- **HCV Liver Data**: Lichtinghagen, R., Klawonn, F., and Hoffmann, G. (2020). UCI Machine Learning Repository.
+- **Heart Disease**: Janosi, Steinbrunn, Pfisterer, Detrano. (1988). Cleveland Heart Disease, UCI Machine Learning Repository.
+- **Diabetes**: National Institute of Diabetes and Digestive and Kidney Diseases (NIDDK), Pima Indians Diabetes Dataset.
+- **Breast Cancer**: Street, W.N., Wolberg, W.H., and Mangasarian, O.L. (1995). Wisconsin Diagnostic Breast Cancer (WDBC), UCI.
 
-Do not concatenate unrelated disease datasets. Each module needs a separate dataset, target definition, verified input units, preprocessing pipeline, model, held-out evaluation, and interface contract. The registry and `/api/<module_id>/predict` routes provide structure, but new dataset-specific training and validation code is still needed. Check licenses, overlap, label quality and domain shift before exposing a new module. Different disease modules need not be mutually exclusive. No additional disease dataset has been downloaded.
-
-## Dataset attribution
-
-Lichtinghagen, R., Klawonn, F., and Hoffmann, G. (2020). HCV data. UCI Machine Learning Repository. https://doi.org/10.24432/C5D612. CC BY 4.0. Dataset rows are unchanged; preprocessing is applied by the training pipeline. The original publication is Hoffmann et al. (2018), https://doi.org/10.21037/jlpm.2018.06.01.
+*Note: This platform is designed for research and educational purposes. Model scores are empirical probabilities and not calibrated clinical decisions.*

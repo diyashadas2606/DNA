@@ -1,5 +1,6 @@
 {
   "module": "hcv",
+  "test_name": "Comprehensive Liver Function Panel (LFT)",
   "samples": 615,
   "features": 12,
   "train_samples": 492,
@@ -35,6 +36,7 @@
   "accuracy": 0.9512195121951219,
   "balanced_accuracy": 0.5866666666666667,
   "macro_f1": 0.6123865381929898,
+  "roc_auc": null,
   "baseline_accuracy": 0.8699186991869918,
   "baseline_macro_f1": 0.18608695652173912,
   "classification_report": {

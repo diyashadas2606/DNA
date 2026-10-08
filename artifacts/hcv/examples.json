@@ -1,6 +1,9 @@
 [
   {
     "sample_id": 271,
+    "actual_class": "Blood donor",
+    "predicted_class": "Blood donor",
+    "case_label": "Patient Case 1: Blood donor",
     "features": {
       "Age": 59,
       "Sex": "m",
@@ -17,7 +20,30 @@
     }
   },
   {
+    "sample_id": 455,
+    "actual_class": "Blood donor",
+    "predicted_class": "Blood donor",
+    "case_label": "Patient Case 2: Blood donor",
+    "features": {
+      "Age": 51,
+      "Sex": "f",
+      "ALB": 38.3,
+      "ALP": 52.9,
+      "ALT": 12.4,
+      "AST": 16.5,
+      "BIL": 3.8,
+      "CHE": 7.22,
+      "CHOL": 5.43,
+      "CREA": 55.0,
+      "GGT": 12.7,
+      "PROT": 70.2
+    }
+  },
+  {
     "sample_id": 535,
+    "actual_class": "Suspected blood donor",
+    "predicted_class": "Blood donor",
+    "case_label": "Patient Case 3: Suspected blood donor",
     "features": {
       "Age": 48,
       "Sex": "m",
@@ -35,6 +61,9 @@
   },
   {
     "sample_id": 558,
+    "actual_class": "Hepatitis",
+    "predicted_class": "Fibrosis",
+    "case_label": "Patient Case 4: Hepatitis",
     "features": {
       "Age": 51,
       "Sex": "m",
@@ -51,7 +80,30 @@
     }
   },
   {
+    "sample_id": 561,
+    "actual_class": "Hepatitis",
+    "predicted_class": "Blood donor",
+    "case_label": "Patient Case 5: Hepatitis",
+    "features": {
+      "Age": 33,
+      "Sex": "f",
+      "ALB": 43.0,
+      "ALP": 29.6,
+      "ALT": 3.8,
+      "AST": 16.7,
+      "BIL": 6.0,
+      "CHE": 6.88,
+      "CHOL": 5.72,
+      "CREA": 58.8,
+      "GGT": 11.5,
+      "PROT": 78.2
+    }
+  },
+  {
     "sample_id": 581,
+    "actual_class": "Fibrosis",
+    "predicted_class": "Blood donor",
+    "case_label": "Patient Case 6: Fibrosis",
     "features": {
       "Age": 68,
       "Sex": "f",
@@ -68,7 +120,30 @@
     }
   },
   {
+    "sample_id": 573,
+    "actual_class": "Fibrosis",
+    "predicted_class": "Fibrosis",
+    "case_label": "Patient Case 7: Fibrosis",
+    "features": {
+      "Age": 54,
+      "Sex": "m",
+      "ALB": 41.0,
+      "ALP": 41.8,
+      "ALT": 41.5,
+      "AST": 187.9,
+      "BIL": 21.0,
+      "CHE": 8.59,
+      "CHOL": 5.85,
+      "CREA": 91.0,
+      "GGT": 104.9,
+      "PROT": 79.1
+    }
+  },
+  {
     "sample_id": 599,
+    "actual_class": "Cirrhosis",
+    "predicted_class": "Cirrhosis",
+    "case_label": "Patient Case 8: Cirrhosis",
     "features": {
       "Age": 58,
       "Sex": "m",
@@ -82,6 +157,26 @@
       "CREA": 66.4,
       "GGT": 273.7,
       "PROT": 78.1
+    }
+  },
+  {
+    "sample_id": 605,
+    "actual_class": "Cirrhosis",
+    "predicted_class": "Cirrhosis",
+    "case_label": "Patient Case 9: Cirrhosis",
+    "features": {
+      "Age": 74,
+      "Sex": "m",
+      "ALB": 23.0,
+      "ALP": 34.1,
+      "ALT": 2.1,
+      "AST": 90.4,
+      "BIL": 22.0,
+      "CHE": 2.5,
+      "CHOL": 3.29,
+      "CREA": 51.0,
+      "GGT": 46.8,
+      "PROT": 57.1
     }
   }
 ]

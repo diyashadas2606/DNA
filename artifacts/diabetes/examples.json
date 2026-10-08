@@ -1,0 +1,66 @@
+[
+  {
+    "sample_id": 44,
+    "actual_class": "Non-Diabetic",
+    "predicted_class": "Diabetic",
+    "case_label": "Patient Case 1: Non-Diabetic",
+    "features": {
+      "Pregnancies": 7.0,
+      "Glucose": 159.0,
+      "BloodPressure": 64.0,
+      "SkinThickness": null,
+      "Insulin": null,
+      "BMI": 27.4,
+      "DiabetesPedigreeFunction": 0.294,
+      "Age": 40.0
+    }
+  },
+  {
+    "sample_id": 672,
+    "actual_class": "Non-Diabetic",
+    "predicted_class": "Non-Diabetic",
+    "case_label": "Patient Case 2: Non-Diabetic",
+    "features": {
+      "Pregnancies": 10.0,
+      "Glucose": 68.0,
+      "BloodPressure": 106.0,
+      "SkinThickness": 23.0,
+      "Insulin": 49.0,
+      "BMI": 35.5,
+      "DiabetesPedigreeFunction": 0.285,
+      "Age": 47.0
+    }
+  },
+  {
+    "sample_id": 630,
+    "actual_class": "Diabetic",
+    "predicted_class": "Non-Diabetic",
+    "case_label": "Patient Case 3: Diabetic",
+    "features": {
+      "Pregnancies": 7.0,
+      "Glucose": 114.0,
+      "BloodPressure": 64.0,
+      "SkinThickness": null,
+      "Insulin": null,
+      "BMI": 27.4,
+      "DiabetesPedigreeFunction": 0.732,
+      "Age": 34.0
+    }
+  },
+  {
+    "sample_id": 387,
+    "actual_class": "Diabetic",
+    "predicted_class": "Diabetic",
+    "case_label": "Patient Case 4: Diabetic",
+    "features": {
+      "Pregnancies": 8.0,
+      "Glucose": 105.0,
+      "BloodPressure": 100.0,
+      "SkinThickness": 36.0,
+      "Insulin": null,
+      "BMI": 43.3,
+      "DiabetesPedigreeFunction": 0.239,
+      "Age": 45.0
+    }
+  }
+]
